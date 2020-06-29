@@ -1,0 +1,69 @@
+service: ClashRoyaleStats-flask
+
+plugins:
+  - serverless-python-requirements
+  - serverless-wsgi
+  - serverless-dynamodb-local
+  
+custom:
+  tableName: 'players-table-${self:provider.stage}'
+  wsgi:
+    app: app.app
+    packRequirements: false
+  pythonRequirements:
+    dockerizePip: non-linux
+  dynamodb:
+    start:
+      migrate: true
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["PlayersDynamoDBTable", "Arn" ] }
+  environment:
+    PLAYERS_TABLE: ${self:custom.tableName}
+
+functions:
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+  getPlayer:
+    handler: wsgi_handler.handler
+    events:
+      - http: 'GET /players/{proxy+}'
+  createPlayer:
+    handler: wsgi_handler.handler
+    events:
+      - http: 'POST /players'
+
+resources:
+  Resources:
+    PlayersDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: playerId
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: playerId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}

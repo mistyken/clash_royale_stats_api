@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# node packages
+node_modules/
+
+# serverless stuff
+.dynamodb/
+.serverless/

@@ -1,0 +1,25 @@
+{
+  "name": "clash_royale_stats_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistyken/clash_royale_stats_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mistyken/clash_royale_stats_api/issues"
+  },
+  "homepage": "https://github.com/mistyken/clash_royale_stats_api#readme",
+  "devDependencies": {
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-python-requirements": "^5.1.0",
+    "serverless-wsgi": "^1.7.5"
+  }
+}
